@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Barn: Petualangan Matematika</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --wood: #8D5B4C;
+            --wood-dark: #5C3A21;
+            --bg: #E8F5E9;
+            --white: #FFFFFF;
+            --text: #2C3E50;
+            --danger: #E53935;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 650px;
+            overflow: hidden;
+            border: 4px solid var(--wood);
+        }
+
+        .game-header {
+            background: var(--wood);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #FFB300;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .game-body {
+            padding: 25px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .question-box {
+            background: #FFF8E1;
+            border-left: 5px solid #FFC107;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .keypad-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .display-screen {
+            width: 100%;
+            max-width: 250px;
+            height: 50px;
+            background: #263238;
+            color: #00E676;
+            font-family: monospace;
+            font-size: 1.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            letter-spacing: 5px;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .btn-key {
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            background: #ECEFF1;
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .btn-key:active {
+            background: #CFD8DC;
+            transform: scale(0.95);
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-clear {
+            background: var(--danger);
+            color: white;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #CCC;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 24px;
+        }
+
+        .success-text { color: var(--primary-dark); }
+        .error-text { color: var(--danger); }
+
+        .progress-bar {
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div class="game-header">
+        <h1 id="stage-title">Stage 1: Membuka Pintu Kandang</h1>
+        <span class="badge" id="level-badge">Soal 1 / 5</span>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="game-body">
+        <!-- STAGE 1: KEYPAD DOOR -->
+        <div id="stage1-view">
+            <div class="question-box" id="s1-question"></div>
+
+            <div class="keypad-container">
+                <div class="display-screen" id="s1-display">_</div>
+                <div class="keypad">
+                    <button class="btn-key" onclick="pressKey(1)">1</button>
+                    <button class="btn-key" onclick="pressKey(2)">2</button>
+                    <button class="btn-key" onclick="pressKey(3)">3</button>
+                    <button class="btn-key" onclick="pressKey(4)">4</button>
+                    <button class="btn-key" onclick="pressKey(5)">5</button>
+                    <button class="btn-key" onclick="pressKey(6)">6</button>
+                    <button class="btn-key" onclick="pressKey(7)">7</button>
+                    <button class="btn-key" onclick="pressKey(8)">8</button>
+                    <button class="btn-key" onclick="pressKey(9)">9</button>
+                    <button class="btn-key btn-clear" onclick="clearKey()">C</button>
+                    <button class="btn-key" onclick="pressKey(0)">0</button>
+                    <button class="btn-key" style="background:#81C784;" onclick="submitStage1()">✓</button>
+                </div>
+            </div>
+            <div class="feedback" id="s1-feedback"></div>
+        </div>
+
+        <!-- STAGE 2: INSIDE THE BARN -->
+        <div id="stage2-view" class="hidden">
+            <div class="question-box" id="s2-question"></div>
+            <div id="s2-input-container"></div>
+            <button class="btn-action" onclick="submitStage2()">Periksa Jawaban</button>
+            <div class="feedback" id="s2-feedback"></div>
+        </div>
+
+        <!-- VICTORY SCREEN -->
+        <div id="win-view" class="hidden" style="text-align: center;">
+            <h2 style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 10px;">🎉 Selamat! 🎉</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 20px;">Kamu berhasil menyelesaikan semua teka-teki peternakan!</p>
+            <button class="btn-action" onclick="restartGame()">Main Lagi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const stage1Questions = [
+        { q: "I am a number that when multiplied by 4 the result is 60.", a: "15" },
+        { q: "I am a number that when multiplied by 7 the result is 84.", a: "12" },
+        { q: "I am a number that when divided by 5 the result is 18.", a: "90" },
+        { q: "I am a number that when multiplied by 6 the result is 72.", a: "12" },
+        { q: "I am a number that when divided by 4 the result is 25.", a: "100" }
+    ];
+
+    const stage2Questions = [
+        {
+            type: "single",
+            q: "There are some chickens in a coop. The total number of chicken legs is 46. How many chickens are there?",
+            label: "Number of chickens:",
+            a: "23"
+        },
+        {
+            type: "single",
+            q: "There are some sheep in a field. The farmer said there were 84 lamb legs in total. How many sheep are there?",
+            label: "Number of sheep:",
+            a: "21"
+        },
+        {
+            type: "single",
+            q: "There are 12 cows and 6 ducks on a farm. How many legs do they have in total?",
+            label: "Total legs in all:",
+            a: "60"
+        },
+        {
+            type: "double_guess",
+            q: "On a farm, there are 12 animals: goats and chickens. The total number of legs is 38. How many goats and chickens are there?",
+            a_chickens: "5",
+            a_goats: "7"
+        }
+    ];
+
+    let currentS1Index = 0;
+    let currentS2Index = 0;
+    let inputS1 = "";
+
+    function updateStage1UI() {
+        const q = stage1Questions[currentS1Index];
+        document.getElementById("s1-question").innerText = q.q;
+        document.getElementById("level-badge").innerText = `Soal ${currentS1Index + 1} / 5`;
+        document.getElementById("progress-fill").style.width = `${((currentS1Index) / 5) * 50}%`;
+        inputS1 = "";
+        renderS1Display();
+        document.getElementById("s1-feedback").innerText = "";
+    }
+
+    function pressKey(num) {
+        if (inputS1.length < 4) {
+            inputS1 += num;
+            renderS1Display();
+        }
+    }
+
+    function clearKey() {
+        inputS1 = "";
+        renderS1Display();
+    }
+
+    function renderS1Display() {
+        document.getElementById("s1-display").innerText = inputS1 || "_";
+    }
+
+    function submitStage1() {
+        const target = stage1Questions[currentS1Index].a;
+        const feedback = document.getElementById("s1-feedback");
+
+        if (inputS1 === target) {
+            feedback.className = "feedback success-text";
+            feedback.innerText = "✓ Kode Benar!";
+            setTimeout(() => {
+                currentS1Index++;
+                if (currentS1Index < stage1Questions.length) {
+                    updateStage1UI();
+                } else {
+                    initStage2();
+                }
+            }, 800);
+        } else {
+            feedback.className = "feedback error-text";
+            feedback.innerText = "❌ Kode Salah! Coba lagi.";
+            inputS1 = "";
+            renderS1Display();
+        }
+    }
+
+    function initStage2() {
+        document.getElementById("stage1-view").classList.add("hidden");
+        document.getElementById("stage2-view").classList.remove("hidden");
+        document.getElementById("stage-title").innerText = "Stage 2: Menghitung Hewan & Kaki";
+        updateStage2UI();
+    }
+
+    function updateStage2UI() {
+        const q = stage2Questions[currentS2Index];
+        document.getElementById("s2-question").innerText = q.q;
+        document.getElementById("level-badge").innerText = `Level ${currentS2Index + 1} / 4`;
+        document.getElementById("progress-fill").style.width = `${50 + ((currentS2Index) / 4) * 50}%`;
+        document.getElementById("s2-feedback").innerText = "";
+
+        const container = document.getElementById("s2-input-container");
+        container.innerHTML = "";
+
+        if (q.type === "single") {
+            container.innerHTML = `
+                <div class="input-group">
+                    <label>${q.label}</label>
+                    <input type="number" id="s2-ans" class="input-field" placeholder="Masukkan jawaban..." />
+                </div>
+            `;
+        } else if (q.type === "double_guess") {
+            container.innerHTML = `
+                <div class="input-group">
+                    <label>Number of chickens (Ayam):</label>
+                    <input type="number" id="s2-ans-chickens" class="input-field" placeholder="Contoh: 5" />
+                </div>
+                <div class="input-group">
+                    <label>Number of goats (Kambing):</label>
+                    <input type="number" id="s2-ans-goats" class="input-field" placeholder="Contoh: 7" />
+                </div>
+            `;
+        }
+    }
+
+    function submitStage2() {
+        const q = stage2Questions[currentS2Index];
+        const feedback = document.getElementById("s2-feedback");
+        let isCorrect = false;
+
+        if (q.type === "single") {
+            const val = document.getElementById("s2-ans").value.trim();
+            isCorrect = (val === q.a);
+        } else if (q.type === "double_guess") {
+            const chk = document.getElementById("s2-ans-chickens").value.trim();
+            const gts = document.getElementById("s2-ans-goats").value.trim();
+            isCorrect = (chk === q.a_chickens && gts === q.a_goats);
+        }
+
+        if (isCorrect) {
+            feedback.className = "feedback success-text";
+            feedback.innerText = "✓ Tepat Sekali!";
+            setTimeout(() => {
+                currentS2Index++;
+                if (currentS2Index < stage2Questions.length) {
+                    updateStage2UI();
+                } else {
+                    showWinScreen();
+                }
+            }, 800);
+        } else {
+            feedback.className = "feedback error-text";
+            feedback.innerText = "❌ Masih kurang tepat, hitung lagi ya!";
+        }
+    }
+
+    function showWinScreen() {
+        document.getElementById("stage2-view").classList.add("hidden");
+        document.getElementById("win-view").classList.remove("hidden");
+        document.getElementById("stage-title").innerText = "Misi Selesai!";
+        document.getElementById("level-badge").innerText = "Selesai";
+        document.getElementById("progress-fill").style.width = "100%";
+    }
+
+    function restartGame() {
+        currentS1Index = 0;
+        currentS2Index = 0;
+        document.getElementById("win-view").classList.add("hidden");
+        document.getElementById("stage1-view").classList.remove("hidden");
+        document.getElementById("stage-title").innerText = "Stage 1: Membuka Pintu Kandang";
+        updateStage1UI();
+    }
+
+    updateStage1UI();
+</script>
+
+</body>
+</html>
