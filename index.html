@@ -4,261 +4,523 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escape Barn: Petualangan Matematika</title>
+    <!-- Font kartun ramah anak (Fredoka) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #4CAF50;
-            --primary-dark: #388E3C;
-            --wood: #8D5B4C;
-            --wood-dark: #5C3A21;
-            --bg: #E8F5E9;
-            --white: #FFFFFF;
-            --text: #2C3E50;
-            --danger: #E53935;
+            --wood-dark: #4a2810;
+            --wood-medium: #8c5226;
+            --wood-light: #c88346;
+            --wood-sign: #d39e62;
+            --green-grass: #7ec850;
+            --sky-blue: #a0e0ff;
+            --btn-green: #58cc02;
+            --btn-green-shadow: #46a302;
+            --btn-red: #ff4b4b;
+            --btn-blue: #1cb0f6;
+            --btn-orange: #ff9600;
+            --btn-yellow: #ffc800;
         }
 
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Fredoka', cursive, sans-serif;
+            user-select: none;
             margin: 0;
             padding: 0;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: #111;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .game-card {
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        /* Container Layar Game (Rasio 16:9 Kartun) */
+        .game-viewport {
             width: 100%;
-            max-width: 650px;
-            overflow: hidden;
-            border: 4px solid var(--wood);
-        }
-
-        .game-header {
-            background: var(--wood);
-            color: var(--white);
-            padding: 20px;
-            text-align: center;
+            max-width: 900px;
+            height: 540px;
             position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            border: 4px solid #fff;
         }
 
-        .game-header h1 {
-            font-size: 1.6rem;
-            margin-bottom: 5px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #FFB300;
-            color: #000;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .game-body {
-            padding: 25px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .question-box {
-            background: #FFF8E1;
-            border-left: 5px solid #FFC107;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            font-weight: 600;
-            line-height: 1.5;
-        }
-
-        .keypad-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .display-screen {
+        /* ================= BACKGROUNDS ================= */
+        /* Background Stage 1: Luar Kandang & Alam */
+        .bg-stage1 {
+            background: linear-gradient(to bottom, #87ceeb 0%, #b0e0e6 40%, #7ec850 40%, #5ba832 100%);
             width: 100%;
-            max-width: 250px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Ilustrasi Bangunan Kandang Kayu di Stage 1 */
+        .barn-structure {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 440px;
+            height: 380px;
+            background: var(--wood-medium);
+            border: 6px solid var(--wood-dark);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        /* Atap Kandang */
+        .barn-roof {
+            position: absolute;
+            top: -45px;
+            left: -30px;
+            width: 500px;
             height: 50px;
-            background: #263238;
-            color: #00E676;
-            font-family: monospace;
-            font-size: 1.8rem;
+            background: #5d7c3d;
+            border: 5px solid #3d5427;
+            border-radius: 10px;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+        }
+
+        /* Pintu Kandang Kayu */
+        .barn-door {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 240px;
+            background: var(--wood-light);
+            border: 5px solid var(--wood-dark);
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 8px;
-            letter-spacing: 5px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
         }
 
-        .keypad {
+        .barn-door::before, .barn-door::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 12px;
+            background: var(--wood-dark);
+        }
+        .barn-door::before { top: 40px; }
+        .barn-door::after { bottom: 40px; }
+
+        /* Background Stage 2: Dalam Kandang Kayu Warm */
+        .bg-stage2 {
+            background: radial-gradient(circle, #e29f52 0%, #9e5b22 100%);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .barn-interior-beams {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, rgba(74, 40, 16, 0.3) 10px, transparent 10px),
+                linear-gradient(0deg, rgba(74, 40, 16, 0.15) 40px, transparent 40px);
+            background-size: 80px 100%, 100% 80px;
+        }
+
+        /* ================= HUD (HEADS-UP DISPLAY) ================= */
+        .hud-layer {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .hud-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .hud-card {
+            background: #fff;
+            border: 3px solid #333;
+            border-radius: 20px;
+            padding: 4px 14px 4px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 0 #333;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .hud-icon {
+            font-size: 1.3rem;
+        }
+
+        .stage-badge {
+            background: #fff;
+            border: 3px solid #333;
+            border-radius: 12px;
+            padding: 6px 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #333;
+            box-shadow: 0 4px 0 #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ================= STAGE 1 ELEMENTS ================= */
+        /* Papan Kayu Tempat Soal Gantung */
+        .wooden-sign {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 380px;
+            background: var(--wood-sign);
+            border: 5px solid var(--wood-dark);
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 8px 0 var(--wood-dark), 0 12px 20px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+
+        /* Rantai Gantungan Papan */
+        .wooden-sign::before, .wooden-sign::after {
+            content: '⛓️';
+            position: absolute;
+            top: -28px;
+            font-size: 1.2rem;
+        }
+        .wooden-sign::before { left: 40px; }
+        .wooden-sign::after { right: 40px; }
+
+        .wooden-sign p {
+            color: #2c1605;
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+        }
+
+        /* Keypad Digital di Pintu Kandang */
+        .keypad-device {
+            background: #2b3942;
+            border: 4px solid #1a232a;
+            border-radius: 12px;
+            padding: 10px;
+            width: 170px;
+            box-shadow: 0 6px 0 #111;
+            z-index: 6;
+        }
+
+        .keypad-screen {
+            background: #102027;
+            color: #00e676;
+            font-family: monospace;
+            font-size: 1rem;
+            text-align: center;
+            padding: 6px;
+            border-radius: 6px;
+            border: 2px solid #004d40;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .keypad-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            width: 100%;
-            max-width: 250px;
+            gap: 6px;
         }
 
-        .btn-key {
-            padding: 15px;
+        .kp-btn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.4);
+            transition: transform 0.05s;
+        }
+
+        .kp-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+        }
+
+        .kp-blue { background: var(--btn-blue); }
+        .kp-orange { background: var(--btn-orange); }
+        .kp-yellow { background: var(--btn-yellow); color: #333; }
+        .kp-green { background: var(--btn-green); grid-column: span 1; }
+        .kp-red { background: var(--btn-red); }
+
+        /* Progress Bar Kapsul di Bawah */
+        .bottom-progress-container {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 20px;
+            background: #222;
+            border: 3px solid #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .bottom-progress-fill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(to right, #a0e0ff, #58cc02);
+            transition: width 0.4s ease;
+        }
+
+        /* ================= STAGE 2 ELEMENTS ================= */
+        /* Speech Bubble Percakapan Peternak */
+        .speech-bubble {
+            position: absolute;
+            top: 75px;
+            right: 40px;
+            width: 380px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 8px 0 #333;
+            z-index: 8;
+        }
+
+        /* Ekor Percakapan Bubble */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 60px;
+            border-width: 20px 20px 0 0;
+            border-style: solid;
+            border-color: #fff transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -26px;
+            left: 57px;
+            border-width: 23px 23px 0 0;
+            border-style: solid;
+            border-color: #333 transparent;
+            display: block;
+            width: 0;
+            z-index: 0;
+        }
+
+        .speech-title {
+            text-align: center;
             font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            background: #ECEFF1;
-            color: var(--text);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.1s;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
 
-        .btn-key:active {
-            background: #CFD8DC;
-            transform: scale(0.95);
-        }
-
-        .btn-action {
-            background: var(--primary);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-
-        .btn-action:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-clear {
-            background: var(--danger);
-            color: white;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .speech-text {
+            text-align: center;
+            font-size: 1.05rem;
+            color: #444;
+            line-height: 1.35;
+            font-weight: 600;
             margin-bottom: 15px;
         }
 
-        .input-group label {
-            font-weight: bold;
+        .s2-inputs-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
-        .input-field {
-            padding: 12px;
-            border: 2px solid #CCC;
-            border-radius: 8px;
+        .s2-input-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            color: #333;
             font-size: 1rem;
         }
 
-        .input-field:focus {
-            border-color: var(--primary);
+        .s2-input-item input {
+            width: 65px;
+            height: 36px;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
             outline: none;
         }
 
-        .feedback {
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
-            min-height: 24px;
+        .s2-input-item input:focus {
+            border-color: var(--btn-blue);
         }
 
-        .success-text { color: var(--primary-dark); }
-        .error-text { color: var(--danger); }
-
-        .progress-bar {
-            height: 8px;
-            background: #E0E0E0;
-            border-radius: 4px;
-            margin-top: 10px;
-            overflow: hidden;
+        .btn-check-s2 {
+            display: block;
+            margin: 0 auto;
+            background: var(--btn-green);
+            color: #fff;
+            border: 3px solid #2e7d32;
+            padding: 8px 30px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2e7d32;
+            transition: transform 0.05s;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s;
+        .btn-check-s2:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #2e7d32;
         }
+
+        /* Karakter Hiasan Tambahan di Layar */
+        .decor-chick {
+            position: absolute;
+            bottom: 25px;
+            left: 20px;
+            font-size: 3.5rem;
+            z-index: 4;
+        }
+
+        .decor-goat {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 4rem;
+            z-index: 4;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="game-card">
-    <div class="game-header">
-        <h1 id="stage-title">Stage 1: Membuka Pintu Kandang</h1>
-        <span class="badge" id="level-badge">Soal 1 / 5</span>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
+<div class="game-viewport">
+    <!-- ================= HUD Top Bar ================= -->
+    <div class="hud-layer">
+        <div class="hud-left">
+            <div class="hud-card">
+                <span class="hud-icon">❤️</span>
+                <span>Lives</span>
+                <span id="lives-txt" style="color: #e53935;">3/3</span>
+            </div>
+            <div class="hud-card">
+                <span class="hud-icon">⭐</span>
+                <span>Score</span>
+                <span id="score-txt">0</span>
+            </div>
+        </div>
+        <div class="stage-badge">
+            <span id="stage-badge-txt">Stage 1</span>
+            <span>⭐</span>
         </div>
     </div>
 
-    <div class="game-body">
-        <!-- STAGE 1: KEYPAD DOOR -->
-        <div id="stage1-view">
-            <div class="question-box" id="s1-question"></div>
+    <!-- ================= STAGE 1: TAMPILAN LUAR KANDANG ================= -->
+    <div id="stage1-view" class="bg-stage1">
+        <!-- Papan Soal Kayu Gantung -->
+        <div class="wooden-sign">
+            <p id="s1-question">I am a number that when multiplied by 4 the result is 60</p>
+        </div>
 
-            <div class="keypad-container">
-                <div class="display-screen" id="s1-display">_</div>
-                <div class="keypad">
-                    <button class="btn-key" onclick="pressKey(1)">1</button>
-                    <button class="btn-key" onclick="pressKey(2)">2</button>
-                    <button class="btn-key" onclick="pressKey(3)">3</button>
-                    <button class="btn-key" onclick="pressKey(4)">4</button>
-                    <button class="btn-key" onclick="pressKey(5)">5</button>
-                    <button class="btn-key" onclick="pressKey(6)">6</button>
-                    <button class="btn-key" onclick="pressKey(7)">7</button>
-                    <button class="btn-key" onclick="pressKey(8)">8</button>
-                    <button class="btn-key" onclick="pressKey(9)">9</button>
-                    <button class="btn-key btn-clear" onclick="clearKey()">C</button>
-                    <button class="btn-key" onclick="pressKey(0)">0</button>
-                    <button class="btn-key" style="background:#81C784;" onclick="submitStage1()">✓</button>
+        <!-- Bangunan Kandang & Keypad Pintu -->
+        <div class="barn-structure">
+            <div class="barn-roof"></div>
+            <div class="barn-door">
+                <div class="keypad-device">
+                    <div class="keypad-screen" id="kp-display">ENTER NUMBER</div>
+                    <div class="keypad-grid">
+                        <button class="kp-btn kp-orange" onclick="pressKey('1')">1</button>
+                        <button class="kp-btn kp-blue" onclick="pressKey('2')">2</button>
+                        <button class="kp-btn kp-yellow" onclick="pressKey('3')">3</button>
+                        <button class="kp-btn kp-blue" onclick="pressKey('4')">4</button>
+                        <button class="kp-btn kp-orange" onclick="pressKey('5')">5</button>
+                        <button class="kp-btn kp-yellow" onclick="pressKey('6')">6</button>
+                        <button class="kp-btn kp-yellow" onclick="pressKey('7')">7</button>
+                        <button class="kp-btn kp-blue" onclick="pressKey('8')">8</button>
+                        <button class="kp-btn kp-orange" onclick="pressKey('9')">9</button>
+                        <button class="kp-btn kp-green" onclick="submitS1()">Enter</button>
+                        <button class="kp-btn kp-blue" onclick="pressKey('0')">0</button>
+                        <button class="kp-btn kp-red" onclick="clearKey()">Clear</button>
+                    </div>
                 </div>
             </div>
-            <div class="feedback" id="s1-feedback"></div>
         </div>
 
-        <!-- STAGE 2: INSIDE THE BARN -->
-        <div id="stage2-view" class="hidden">
-            <div class="question-box" id="s2-question"></div>
-            <div id="s2-input-container"></div>
-            <button class="btn-action" onclick="submitStage2()">Periksa Jawaban</button>
-            <div class="feedback" id="s2-feedback"></div>
+        <div class="decor-chick">🐔</div>
+    </div>
+
+    <!-- ================= STAGE 2: TAMPILAN DALAM KANDANG ================= -->
+    <div id="stage2-view" class="bg-stage2 hidden">
+        <div class="barn-interior-beams"></div>
+
+        <!-- Speech Bubble Soal -->
+        <div class="speech-bubble">
+            <div class="speech-title">✨ Let's figure it out! ✨</div>
+            <div class="speech-text" id="s2-question-text">
+                A farmer has goats and chickens. There are 12 animals altogether, and 38 legs. How many are chickens? And goats?
+            </div>
+            
+            <div class="s2-inputs-row" id="s2-inputs-container">
+                <!-- Diisi via JavaScript -->
+            </div>
+
+            <button class="btn-check-s2" onclick="submitS2()">CHECK</button>
         </div>
 
-        <!-- VICTORY SCREEN -->
-        <div id="win-view" class="hidden" style="text-align: center;">
-            <h2 style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 10px;">🎉 Selamat! 🎉</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 20px;">Kamu berhasil menyelesaikan semua teka-teki peternakan!</p>
-            <button class="btn-action" onclick="restartGame()">Main Lagi</button>
-        </div>
+        <div class="decor-chick" style="left: 60px;">🐥</div>
+        <div class="decor-goat">🐐</div>
+    </div>
+
+    <!-- Progress Bar di Bagian Bawah -->
+    <div class="bottom-progress-container">
+        <div class="bottom-progress-fill" id="progress-fill"></div>
     </div>
 </div>
 
 <script>
-    const stage1Questions = [
+    // DATA SOAL STAGE 1 (Membuka Pintu Kandang)[span_4](start_span)[span_4](end_span)
+    const stage1Data = [
         { q: "I am a number that when multiplied by 4 the result is 60.", a: "15" },
         { q: "I am a number that when multiplied by 7 the result is 84.", a: "12" },
         { q: "I am a number that when divided by 5 the result is 18.", a: "90" },
@@ -266,173 +528,174 @@
         { q: "I am a number that when divided by 4 the result is 25.", a: "100" }
     ];
 
-    const stage2Questions = [
+    // DATA SOAL STAGE 2 (Di Dalam Kandang)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span)
+    const stage2Data = [
+        {
+            type: "double",
+            q: "A farmer has goats and chickens. There are 12 animals altogether, and 38 legs. How many are chickens? And goats?",
+            field1: "Chickens:", a1: "5",
+            field2: "Goats:", a2: "7"
+        },
         {
             type: "single",
             q: "There are some chickens in a coop. The total number of chicken legs is 46. How many chickens are there?",
-            label: "Number of chickens:",
-            a: "23"
+            field1: "Chickens:", a1: "23"
         },
         {
             type: "single",
             q: "There are some sheep in a field. The farmer said there were 84 lamb legs in total. How many sheep are there?",
-            label: "Number of sheep:",
-            a: "21"
+            field1: "Sheep:", a1: "21"
         },
         {
             type: "single",
             q: "There are 12 cows and 6 ducks on a farm. How many legs do they have in total?",
-            label: "Total legs in all:",
-            a: "60"
-        },
-        {
-            type: "double_guess",
-            q: "On a farm, there are 12 animals: goats and chickens. The total number of legs is 38. How many goats and chickens are there?",
-            a_chickens: "5",
-            a_goats: "7"
+            field1: "Total Legs:", a1: "60"
         }
     ];
 
-    let currentS1Index = 0;
-    let currentS2Index = 0;
-    let inputS1 = "";
+    let currentS1 = 0;
+    let currentS2 = 0;
+    let score = 0;
+    let lives = 3;
+    let keypadInput = "";
 
-    function updateStage1UI() {
-        const q = stage1Questions[currentS1Index];
-        document.getElementById("s1-question").innerText = q.q;
-        document.getElementById("level-badge").innerText = `Soal ${currentS1Index + 1} / 5`;
-        document.getElementById("progress-fill").style.width = `${((currentS1Index) / 5) * 50}%`;
-        inputS1 = "";
-        renderS1Display();
-        document.getElementById("s1-feedback").innerText = "";
+    // --- LOGIKA STAGE 1 ---
+    function loadStage1() {
+        document.getElementById("s1-question").innerText = stage1Data[currentS1].q;
+        document.getElementById("stage-badge-txt").innerText = `Stage 1 (${currentS1 + 1}/5)`;
+        keypadInput = "";
+        updateKeypadDisplay("ENTER NUMBER");
+        updateProgress();
     }
 
-    function pressKey(num) {
-        if (inputS1.length < 4) {
-            inputS1 += num;
-            renderS1Display();
+    function pressKey(val) {
+        if (keypadInput.length < 4) {
+            keypadInput += val;
+            updateKeypadDisplay(keypadInput);
         }
     }
 
     function clearKey() {
-        inputS1 = "";
-        renderS1Display();
+        keypadInput = "";
+        updateKeypadDisplay("ENTER NUMBER");
     }
 
-    function renderS1Display() {
-        document.getElementById("s1-display").innerText = inputS1 || "_";
+    function updateKeypadDisplay(text) {
+        document.getElementById("kp-display").innerText = text;
     }
 
-    function submitStage1() {
-        const target = stage1Questions[currentS1Index].a;
-        const feedback = document.getElementById("s1-feedback");
-
-        if (inputS1 === target) {
-            feedback.className = "feedback success-text";
-            feedback.innerText = "✓ Kode Benar!";
+    function submitS1() {
+        if (!keypadInput) return;
+        
+        if (keypadInput === stage1Data[currentS1].a) {
+            updateKeypadDisplay("SUCCESS! ✓");
+            score += 100;
+            document.getElementById("score-txt").innerText = score;
+            
             setTimeout(() => {
-                currentS1Index++;
-                if (currentS1Index < stage1Questions.length) {
-                    updateStage1UI();
+                currentS1++;
+                if (currentS1 < stage1Data.length) {
+                    loadStage1();
                 } else {
+                    // Masuk ke Stage 2
                     initStage2();
                 }
             }, 800);
         } else {
-            feedback.className = "feedback error-text";
-            feedback.innerText = "❌ Kode Salah! Coba lagi.";
-            inputS1 = "";
-            renderS1Display();
+            updateKeypadDisplay("WRONG! ❌");
+            reduceLife();
+            setTimeout(() => {
+                clearKey();
+            }, 800);
         }
     }
 
+    // --- LOGIKA STAGE 2 ---
     function initStage2() {
         document.getElementById("stage1-view").classList.add("hidden");
         document.getElementById("stage2-view").classList.remove("hidden");
-        document.getElementById("stage-title").innerText = "Stage 2: Menghitung Hewan & Kaki";
-        updateStage2UI();
+        loadStage2();
     }
 
-    function updateStage2UI() {
-        const q = stage2Questions[currentS2Index];
-        document.getElementById("s2-question").innerText = q.q;
-        document.getElementById("level-badge").innerText = `Level ${currentS2Index + 1} / 4`;
-        document.getElementById("progress-fill").style.width = `${50 + ((currentS2Index) / 4) * 50}%`;
-        document.getElementById("s2-feedback").innerText = "";
+    function loadStage2() {
+        const item = stage2Data[currentS2];
+        document.getElementById("s2-question-text").innerText = item.q;
+        document.getElementById("stage-badge-txt").innerText = `Stage 2 (${currentS2 + 1}/4)`;
+        updateProgress();
 
-        const container = document.getElementById("s2-input-container");
+        const container = document.getElementById("s2-inputs-container");
         container.innerHTML = "";
 
-        if (q.type === "single") {
+        if (item.type === "double") {
             container.innerHTML = `
-                <div class="input-group">
-                    <label>${q.label}</label>
-                    <input type="number" id="s2-ans" class="input-field" placeholder="Masukkan jawaban..." />
+                <div class="s2-input-item">
+                    <span>${item.field1}</span>
+                    <input type="number" id="s2-in-1" value="0" />
+                </div>
+                <div class="s2-input-item">
+                    <span>${item.field2}</span>
+                    <input type="number" id="s2-in-2" value="0" />
                 </div>
             `;
-        } else if (q.type === "double_guess") {
-            container.innerHTML = `
-                <div class="input-group">
-                    <label>Number of chickens (Ayam):</label>
-                    <input type="number" id="s2-ans-chickens" class="input-field" placeholder="Contoh: 5" />
-                </div>
-                <div class="input-group">
-                    <label>Number of goats (Kambing):</label>
-                    <input type="number" id="s2-ans-goats" class="input-field" placeholder="Contoh: 7" />
-                </div>
-            `;
-        }
-    }
-
-    function submitStage2() {
-        const q = stage2Questions[currentS2Index];
-        const feedback = document.getElementById("s2-feedback");
-        let isCorrect = false;
-
-        if (q.type === "single") {
-            const val = document.getElementById("s2-ans").value.trim();
-            isCorrect = (val === q.a);
-        } else if (q.type === "double_guess") {
-            const chk = document.getElementById("s2-ans-chickens").value.trim();
-            const gts = document.getElementById("s2-ans-goats").value.trim();
-            isCorrect = (chk === q.a_chickens && gts === q.a_goats);
-        }
-
-        if (isCorrect) {
-            feedback.className = "feedback success-text";
-            feedback.innerText = "✓ Tepat Sekali!";
-            setTimeout(() => {
-                currentS2Index++;
-                if (currentS2Index < stage2Questions.length) {
-                    updateStage2UI();
-                } else {
-                    showWinScreen();
-                }
-            }, 800);
         } else {
-            feedback.className = "feedback error-text";
-            feedback.innerText = "❌ Masih kurang tepat, hitung lagi ya!";
+            container.innerHTML = `
+                <div class="s2-input-item">
+                    <span>${item.field1}</span>
+                    <input type="number" id="s2-in-1" value="" placeholder="0" />
+                </div>
+            `;
         }
     }
 
-    function showWinScreen() {
-        document.getElementById("stage2-view").classList.add("hidden");
-        document.getElementById("win-view").classList.remove("hidden");
-        document.getElementById("stage-title").innerText = "Misi Selesai!";
-        document.getElementById("level-badge").innerText = "Selesai";
-        document.getElementById("progress-fill").style.width = "100%";
+    function submitS2() {
+        const item = stage2Data[currentS2];
+        let correct = false;
+
+        if (item.type === "double") {
+            const val1 = document.getElementById("s2-in-1").value.trim();
+            const val2 = document.getElementById("s2-in-2").value.trim();
+            correct = (val1 === item.a1 && val2 === item.a2);
+        } else {
+            const val1 = document.getElementById("s2-in-1").value.trim();
+            correct = (val1 === item.a1);
+        }
+
+        if (correct) {
+            score += 150;
+            document.getElementById("score-txt").innerText = score;
+            currentS2++;
+            
+            if (currentS2 < stage2Data.length) {
+                loadStage2();
+            } else {
+                alert("🎉 SELAMAT! Kamu berhasil menyelesaikan semua tantangan di peternakan!");
+                location.reload();
+            }
+        } else {
+            alert("❌ Jawaban masih kurang tepat. Coba hitung kembali!");
+            reduceLife();
+        }
     }
 
-    function restartGame() {
-        currentS1Index = 0;
-        currentS2Index = 0;
-        document.getElementById("win-view").classList.add("hidden");
-        document.getElementById("stage1-view").classList.remove("hidden");
-        document.getElementById("stage-title").innerText = "Stage 1: Membuka Pintu Kandang";
-        updateStage1UI();
+    // --- FITUR UMUM ---
+    function reduceLife() {
+        lives--;
+        document.getElementById("lives-txt").innerText = `${lives}/3`;
+        if (lives <= 0) {
+            alert("💔 Nyawa habis! Game akan diulang.");
+            location.reload();
+        }
     }
 
-    updateStage1UI();
+    function updateProgress() {
+        let totalSoal = stage1Data.length + stage2Data.length;
+        let dikerjakan = currentS1 + currentS2;
+        let pct = (dikerjakan / totalSoal) * 100;
+        document.getElementById("progress-fill").style.width = `${pct}%`;
+    }
+
+    // Mulai Game
+    loadStage1();
 </script>
 
 </body>
